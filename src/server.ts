@@ -8,20 +8,13 @@ import gameRoutes from "./routes/game";
 dotenv.config();
 const app = express();
 
-// CORS configuration - allow Vercel and all origins
-const corsOptions = {
-  origin: process.env.FRONTEND_URL 
-    ? process.env.FRONTEND_URL 
-    : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        // Allow all origins in production
-        callback(null, true);
-      },
-  credentials: false, // JWT tokens in headers, not cookies
+// CORS configuration - allow all origins (including Vercel)
+app.use(cors({
+  origin: "*", // Allow all origins
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
+  credentials: false,
+}));
 app.use(express.json());
 
 connectDB();
