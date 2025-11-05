@@ -9,12 +9,28 @@ dotenv.config();
 const app = express();
 
 // CORS configuration - allow all origins (including Vercel)
+// Handle preflight OPTIONS requests explicitly
+app.use((req, res, next) => {
+  // Set CORS headers
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Also use cors middleware as backup
 app.use(cors({
-  origin: "*", // Allow all origins
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: false,
 }));
+
 app.use(express.json());
 
 connectDB();
